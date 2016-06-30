@@ -1,9 +1,10 @@
 '''
 Created on Jun 29, 2016
-Last modified on Jun 29, 2016
+Last modified on Jun 30, 2016
 
 @author: Rian Musial
 '''
+
 from util.numUtil import lowestCommonMultiple, getPrimeFactorization
 from copy import deepcopy
 
@@ -122,11 +123,19 @@ class Fraction (object):
         newFraction.simplify()
         return newFraction
     
+    def __radd__(self, other):
+        return self + other
+    
     def __sub__(self, other):
         other = deepcopy(other)
         other.numerator = 0 - other.numerator
         
         return self + other
+
+    def __rsub__(self, other):
+        this = -self
+        
+        return this + other
 
     def __mul__(self, other):
         this = deepcopy(self)
@@ -139,14 +148,26 @@ class Fraction (object):
         newFraction.simplify()
         return newFraction
 
+    def __rmul__(self, other):
+        return self * other
+
     def __truediv__(self, other):
-        other = deepcopy(other)
+        other = Fraction(other)
         other.flip()
         
         return self * other
+    
+    def __rtruediv__(self, other):
+        this = deepcopy(self)
+        this.flip()
+        
+        return this * other
 
     def __floordiv__(self, other):
         return self / other
+    
+    def __rfloordiv__(self, other):
+        return other / self
 
     def __pow__(self, power):
         this = deepcopy(self)
@@ -154,6 +175,9 @@ class Fraction (object):
             this *= self
         
         return this
+
+    def __rpow__(self, other):
+        return other ** float(self)
 
     def __neg__(self):
         negativeLocation = None
