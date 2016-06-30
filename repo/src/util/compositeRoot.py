@@ -30,6 +30,7 @@ class CompositeRoot(object):
         elif isinstance(obj, CompositeRoot):
             for i in obj.roots:
                 self.add(i)
+            return
         
         itemFound = False
         for i in range(len(self.roots)):
@@ -63,6 +64,10 @@ class CompositeRoot(object):
     def __add__(self, other):
         this = deepcopy(self)
         this.add(other)
+        
+        if len(this.roots) == 1:
+            return this.roots[0]
+        
         return this
     
     def __radd__(self, other):

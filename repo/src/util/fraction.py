@@ -7,6 +7,7 @@ Last modified on Jun 30, 2016
 
 from util.numUtil import lowestCommonMultiple, getPrimeFactorization
 from copy import deepcopy
+from util.root import Root
 
 class Fraction (object):
     def __init__(self, numerator = None, denominator = 1):
@@ -83,6 +84,13 @@ class Fraction (object):
         
         self.numerator = oldDenominator
         self.denominator = oldNumerator
+    
+    def isInteger(self):
+        this = deepcopy(self)
+        this.simplify()
+        if this.denominator == 1: 
+            return True
+        else: return False
         
     @staticmethod
     def lowestCommonDenominator(f1, f2):
@@ -106,6 +114,17 @@ class Fraction (object):
     # 
     # Only implemented for operations on the same type
     #######################################################
+
+    def __int__(self):
+        this = deepcopy(self)
+        if isinstance(this.numerator, int) and this.denominator == 1:
+            return this.numerator
+        else:
+            errorText = "Fraction "
+            errorText += str(self)
+            errorText += " cannot be cast to an integer. "
+            errorText += "You can round it if an integer is needed."
+            raise RuntimeError(errorText)
     
     def __add__(self, other):
         this = deepcopy(self)
@@ -177,7 +196,13 @@ class Fraction (object):
         return this
 
     def __rpow__(self, other):
-        return other ** float(self)
+        this = Root()
+        
+        this.degree = self.denominator
+        this.multiplicand = 1
+        this.radicand = other ** self.numerator
+        
+        return this
 
     def __neg__(self):
         negativeLocation = None

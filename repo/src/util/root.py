@@ -18,12 +18,16 @@ class Root (object):
     def getDegree(self):
         return self._degree
     def setDegree(self, degree):
+        if degree == 0:
+            raise ValueError("Degree of a root cannot be zero.")
         self._degree = degree
     degree = property(fset = setDegree, fget = getDegree)
     
     def getRadicand(self):
         return self._radicand
     def setRadicand(self, radicand):
+        if radicand < 0:
+            raise ValueError("Radicand cannot be less than zero.")
         self._radicand = radicand
     radicand = property(fset = setRadicand, fget = getRadicand)
     
@@ -33,6 +37,37 @@ class Root (object):
         self._multiplicand = multiplicand
     multiplicand = property(fset = setMultiplicand, fget = getMultiplicand)
     multiplier = property(fset = setMultiplicand, fget = getMultiplicand)
+
+    def isInteger(self):
+        if self.degree == 1:
+            return True
+        elif self._hasRoot():
+            return True
+        else:
+            return False
+        
+    def _hasRoot(self):
+        for i in range(self.radicand):
+            x = i ** self.degree
+            if x == self.radicand:
+                return True
+        
+        return False
+        
+    def _toInteger(self):
+        if not self.isInteger():
+            errorText = "Cannot cast Root "
+            errorText += str(self)
+            errorText += " as Integer."
+            raise ValueError(errorText)
+        if self.degree == 1:
+            return self.multiplicand * self.radicand
+        else:
+            intOut = 1
+            intOut *= int(self.radicand ** (1 / self.degree))
+            intOut *= self.multiplier
+            
+            return intOut
     
     def __str__(self, *args, **kwargs):
         if self.degree == 1 and self.radicand == 1:
@@ -57,14 +92,37 @@ class Root (object):
         tempDegree = float(self.degree) 
         return tempMultiplier * (tempRadicand ** (1 / tempDegree))
 
+    def __int__(self):
+        return self._toInteger()
+
     def __add__(self, other):
-        pass
+        from util.compositeRoot import CompositeRoot
+        this = CompositeRoot(self)
+        other = CompositeRoot(other)
+        
+        added = this + other
+        return added
+    
+    def __radd__(self, other):
+        return self + other
+    
     def __sub__(self, other):
-        pass
+        other = -other
+        return self + other
+    
+    def __rsub__(self, other):
+        this = -self
+        return this + other
+    
     def __mul__(self, other):
-        pass        
+        return NotImplemented
+    def __rmul__(self, other):
+        return NotImplemented
     def __truediv__(self, other):
-        pass
+        return NotImplemented
+    def __rtruediv__(self, other):
+        return NotImplemented
+    
     def __floordiv__(self, other):
         return self / other
     def __pow__(self, other):
@@ -82,7 +140,7 @@ class Root (object):
             return this
     
     def __rpow__(self, other):
-        pass
+        return NotImplemented
     
     def __neg__(self):
         this = deepcopy(self)
@@ -112,7 +170,18 @@ def testSuite1():
     print(type(r))
     print(isinstance(r, Root))
     
+def testSuite2():
+    r = Root(1)
+    print(int(r))
+    
+    r1 = Root(2)
+    r2 = Root(4, 2)
+    i1 = int(r1) + int(r2)
+    r3 = r1 + r2
+    print(i1)
+    print(r3)
+
 def main():
-    testSuite1()
+    testSuite2()
 
 if __name__ == "__main__": main()
