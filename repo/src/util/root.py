@@ -41,12 +41,12 @@ class Root (object):
     def isInteger(self):
         if self.degree == 1:
             return True
-        elif self._hasRoot():
+        elif self._isAPerfectRoot():
             return True
         else:
             return False
         
-    def _hasRoot(self):
+    def _isAPerfectRoot(self):
         for i in range(self.radicand):
             x = i ** self.degree
             if x == self.radicand:
