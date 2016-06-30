@@ -180,8 +180,10 @@ def testSuite2():
     r3 = r1 + r2
     print(i1)
     print(r3)
+    
+    int(Root(5, 2))
 
 def main():
-    testSuite2()
+    pass
 
 if __name__ == "__main__": main()
